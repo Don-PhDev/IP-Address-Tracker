@@ -9,21 +9,25 @@
         </h1>
         <div class="flex">
           <input
+            v-model="queryIP"
             class="flex-1 py-3 px-2 rounded-tl-md rounded-bl-md focus:outline-none"
             type="text"
             placeholder="Search for IP address or leave empty to get your IP info"
           >
-          <i class="
-            cursor-pointer
-            bg-black text-white
-            px-4 text-lg
-            rounded-tr-md rounded-br-md
-            flex items-center
-            fas fa-chevron-right"
-          ></i>
+          <i
+            @click="getIpInfo"
+            class="
+              cursor-pointer
+              bg-black text-white
+              px-4 text-lg
+              rounded-tr-md rounded-br-md
+              flex items-center
+              fas fa-chevron-right"
+            >
+          </i>
         </div>
       </div>
-      <IPInfo />
+      <IPInfo v-if="ipInfo" :ipInfo="ipInfo" />
     </div>
     <div id="map" class="h-full z-10"></div>
   </div>
@@ -32,7 +36,8 @@
 <script>
 import IPInfo from '../components/IPInfo.vue'
 import leaflet from "leaflet"
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import axios from "axios"
 
 export default {
   name: 'Home',
@@ -41,9 +46,11 @@ export default {
   },
   setup() {
     let map
+    const queryIP = ref("")
+    const ipInfo = ref(null)
 
     onMounted(() => {
-      map = leaflet.map('map').setView([51.505, -0.09], 13)
+      map = leaflet.map('map').setView([14.5995, 120.9842], 10)
 
       leaflet
         .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -51,6 +58,29 @@ export default {
           attribution: '© OpenStreetMap'
         }).addTo(map)
     })
+
+    const getIpInfo = async () => {
+      try {
+        const data = await axios.get(
+          `https://geo.ipify.org/api/v2/country?apiKey=at_QpMy2anXNQtJ3BWixzcJi0gqWHB6j&ipAddress=${queryIP.value}`
+        )
+        const result = data.data
+        ipInfo.value = {
+          address: result.ip,
+          state: result.location.region,
+          timezone: result.location.timezone,
+          isp: result.isp,
+          lat: result.location.lat,
+          lng: result.location.lng,
+        }
+        leaflet.marker([ipInfo.value.lat, ipInfo.value.lng]).addTo(map)
+        map.setView([ipInfo.value.lat, ipInfo.value.lng], 13)
+      } catch (error) {
+        alert(error.message)
+      }
+    }
+
+    return { queryIP, ipInfo, getIpInfo }
   },
 }
 </script>
