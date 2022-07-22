@@ -16,7 +16,7 @@
         IP Address
       </h3>
       <span class="text-2xl">
-        8.8.8.8
+        {{ ipInfo.address }}
       </span>
     </div>
     <div class="flex flex-col">
@@ -24,7 +24,7 @@
         Location
       </h3>
       <span class="text-2xl">
-        California
+        {{ ipInfo.state }}
       </span>
     </div>
     <div class="flex flex-col">
@@ -32,7 +32,7 @@
         Timezone
       </h3>
       <span class="text-2xl">
-        UTC -7
+        UTC {{ ipInfo.timezone }}
       </span>
     </div>
     <div class="flex flex-col">
@@ -40,7 +40,7 @@
         ISP
       </h3>
       <span class="text-2xl">
-        Google
+        {{ ipInfo.isp }}
       </span>
     </div>
   </div>
@@ -48,5 +48,6 @@
 
 <script>
   export default {
+    props: ["ipInfo"]
   }
 </script>
