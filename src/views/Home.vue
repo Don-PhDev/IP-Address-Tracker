@@ -13,6 +13,14 @@
             type="text"
             placeholder="Search for IP address or leave empty to get your IP info"
           >
+          <i class="
+            cursor-pointer
+            bg-black text-white
+            px-4 text-lg
+            rounded-tr-md rounded-br-md
+            flex items-center
+            fas fa-chevron-right"
+          ></i>
         </div>
       </div>
     </div>
